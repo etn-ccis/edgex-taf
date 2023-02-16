@@ -93,13 +93,14 @@ data_dir=$(date +%y%m%d_%H%M%S)
 mkdir -p working_dir/${data_dir}
 
 # export some variables before starting execution
-export WORK_DIR=${HOME}/edgex-taf
+export WORK_DIR=`pwd`
 export DATA_DIR=${WORK_DIR}/working_dir/${data_dir}
 export DATA_FILE=${DATA_DIR}/data.txt
 export SECURITY_SERVICE_NEEDED=true
 export DEPLOY_TYPE=manual
 export AUTH=${auth}
 export PORT=${port}
+export MODULE=${module}
 
 if [ $module == "STM" ] || [ $module == "stm" ]
 then
@@ -145,16 +146,13 @@ then
     exit 1
 fi
 
-if [ $module == "KVM" ] || [ $module == "kvm" ]
-then
-    # Deploy edgex
-    python3 -m TUC --exclude Skipped --include deploy-base-service -u deploy.robot -p default
+# Deploy edgex
+python3 -m TUC --exclude Skipped --include deploy-base-service -u deploy.robot -p default
 
-    while [ ! -f ${DATA_DIR}/data.txt ]
-    do
-        sleep 1
-    done
-fi
+while [ ! -f ${DATA_DIR}/data.txt ]
+do
+    sleep 1
+done
 
 # Start test case execution
 python3 -m TUC --exclude Skipped -t $service -p default
