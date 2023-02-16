@@ -7,11 +7,13 @@ This is created as an intro to understand how EdgeX-TAF will be executed in pipe
 This is main script which will be triggered from pipeline.
 
 user will need to run script as below from pipeline
-   sh trigger.sh --service functionalTest/V2-API/<service_name> --auth <username/password> --port <port_number>
+   sh trigger.sh --service functionalTest/V2-API/<service_name> --auth <username/password> --port <port_number> --module <module> --ip <IP_address>
       > service_name: this will be service name which is present under V2-API
       > username/password: this will be username and password of board. if user will not provide then it will
                            take default as admin/admin
       > port: this is socket port. as of now we will take as 8002
+      > module: this will be any module like KVM or STM
+      > ip: this will be IP address of modue. if you give module name as KVM then there is no need to provide IP adress
 
 
 The execution flow of this script will be as follow
