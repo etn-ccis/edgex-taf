@@ -1,8 +1,10 @@
 # This is main script to trigger edgex-taf tests in non-docker mode in pipeline
-#	usage: sh trigger.sh --service functionalTest/V2-API/core-metadata --auth admin/admin --port 8002
+#	usage for KVM: sh trigger.sh --service functionalTest/V2-API/core-metadata --auth admin/admin --port 8002 --module KVM
+#	usage for STM: sh trigger.sh --service functionalTest/V2-API/core-metadata --auth admin/admin --port 8002 --module STM --ip <IP_address_of_STM>
 #
 # This script workflow will be like
 #       1. Parse arguments
+#              Note: if you will set module as KVM then no need to give IP address
 #       2. Create unique directory to store logs and data
 #	3. Check existance of virtualenv and if not exist then will create it.
 #       4. call prerequisite_changes.py file to make changes according to service
@@ -17,12 +19,12 @@
 if [ $# -eq 0 ]
 then
     echo "No arguments supplied, please provide data"
-    echo "Usage: sh trigger.sh --service functionalTest/V2-API/<any_service> --auth <username/password> --port <port_number>"
+    echo "Usage: sh trigger.sh --service functionalTest/V2-API/<any_service> --auth <username/password> --port <port_number> --module <module> --ip <ip_address>"
     exit 1
 fi
 
-SHORT=s:,a:,p:
-LONG=service:,auth:,port:
+SHORT=s:,a:,p:,m:,i:
+LONG=service:,auth:,port:,module:,ip:
 OPTS=$(getopt -a -n weather --options $SHORT --longoptions $LONG -- "$@")
 
 eval set -- "$OPTS"
@@ -40,6 +42,14 @@ do
       ;;
     -p | --port)
       port=$2
+      shift 2
+      ;;
+    -m | --module)
+      module=$2
+      shift 2
+      ;;
+    -i | --ip)
+      ip=$2
       shift 2
       ;;
     --)
@@ -78,7 +88,6 @@ then
     exit 1
 fi
 
-
 #creating one timestamp based directory to store data
 data_dir=$(date +%y%m%d_%H%M%S)
 mkdir -p working_dir/${data_dir}
@@ -91,6 +100,11 @@ export SECURITY_SERVICE_NEEDED=true
 export DEPLOY_TYPE=manual
 export AUTH=${auth}
 export PORT=${port}
+
+if [ $module == "STM" ] || [ $module == "stm" ]
+then
+    echo $ip > $DATA_FILE
+fi
 
 # creating VENV if it does not exist
 if [[ "$VIRTUAL_ENV" != " " ]]
@@ -122,7 +136,7 @@ pip3 install pyyaml
 pip3 install ./edgex-taf-common
 
 # Change general modification as well as service specific modification for test execution
-python3 prerequisite_changes.py ${test_service}
+python3 prerequisite_changes.py ${test_service} ${module}
 
 result=`echo $?`
 
@@ -131,13 +145,16 @@ then
     exit 1
 fi
 
-# Deploy edgex
-python3 -m TUC --exclude Skipped --include deploy-base-service -u deploy.robot -p default
+if [ $module == "KVM" ] || [ $module == "kvm" ]
+then
+    # Deploy edgex
+    python3 -m TUC --exclude Skipped --include deploy-base-service -u deploy.robot -p default
 
-while [ ! -f ${DATA_DIR}/data.txt ]
-do
-    sleep 1
-done
+    while [ ! -f ${DATA_DIR}/data.txt ]
+    do
+        sleep 1
+    done
+fi
 
 # Start test case execution
 python3 -m TUC --exclude Skipped -t $service -p default
