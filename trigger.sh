@@ -1,10 +1,10 @@
 # This is main script to trigger edgex-taf tests in non-docker mode in pipeline
-#	usage for KVM: sh trigger.sh --service functionalTest/V2-API/core-metadata --auth admin/admin --port 8002 --module KVM
-#	usage for STM: sh trigger.sh --service functionalTest/V2-API/core-metadata --auth admin/admin --port 8002 --module STM --ip <IP_address_of_STM>
+#	usage for KVM: sh trigger.sh --service functionalTest/V2-API/core-metadata --auth admin/admin --port 8002 --target KVM
+#	usage for STM: sh trigger.sh --service functionalTest/V2-API/core-metadata --auth admin/admin --port 8002 --target STM --ip <IP_address_of_STM>
 #
 # This script workflow will be like
 #       1. Parse arguments
-#              Note: if you will set module as KVM then no need to give IP address
+#              Note: if you will set target as KVM then no need to give IP address
 #       2. Create unique directory to store logs and data
 #	3. Check existance of virtualenv and if not exist then will create it.
 #       4. call prerequisite_changes.py file to make changes according to service
@@ -19,12 +19,12 @@
 if [ $# -eq 0 ]
 then
     echo "No arguments supplied, please provide data"
-    echo "Usage: sh trigger.sh --service functionalTest/V2-API/<any_service> --auth <username/password> --port <port_number> --module <module> --ip <ip_address>"
+    echo "Usage: sh trigger.sh --service functionalTest/V2-API/<any_service> --auth <username/password> --port <port_number> --target <Target_module> --ip <ip_address>"
     exit 1
 fi
 
-SHORT=s:,a:,p:,m:,i:
-LONG=service:,auth:,port:,module:,ip:
+SHORT=s:,a:,p:,t:,i:
+LONG=service:,auth:,port:,target:,ip:
 OPTS=$(getopt -a -n weather --options $SHORT --longoptions $LONG -- "$@")
 
 eval set -- "$OPTS"
@@ -44,8 +44,8 @@ do
       port=$2
       shift 2
       ;;
-    -m | --module)
-      module=$2
+    -t | --target)
+      target=$2
       shift 2
       ;;
     -i | --ip)
@@ -100,9 +100,9 @@ export SECURITY_SERVICE_NEEDED=true
 export DEPLOY_TYPE=manual
 export AUTH=${auth}
 export PORT=${port}
-export MODULE=${module}
+export TARGET=${target}
 
-if [ $module == "STM" ] || [ $module == "stm" ]
+if [ $target == "STM" ] || [ $target == "stm" ]
 then
     echo $ip > $DATA_FILE
 fi
@@ -116,28 +116,28 @@ then
     python3 -m venv .
     source ./bin/activate
     python3 -m pip install -U pip
-    pip install -U virtualenv
+    pip3 install -U virtualenv
 fi
 
 # Install Robot Framework related Libraries
-python3 -m pip install robotframework
-python3 -m pip install requests
-python3 -m pip install robotframework-requests
-python3 -m pip install robotframework-jsonlibrary
+echo "<<<<< Installing Robot framework related libraries >>>>>"
+python3 -m pip install -r requirements_eaton.txt
+sleep 1
 
 # Install TAF common:
+echo "<<<<< Installing TAF common >>>>>"
 git clone https://github.com/edgexfoundry/edgex-taf-common.git
+sleep 1
 
 # Install dependency lib
-pip3 install wheel
+echo "<<<<< Installing TAF common related libraries >>>>>"
 python3 -m pip install -r ./edgex-taf-common/requirements.txt
-pip3 install pyyaml
 
 # Install edgex-taf-common as lib
 pip3 install ./edgex-taf-common
 
 # Change general modification as well as service specific modification for test execution
-python3 prerequisite_changes.py ${test_service} ${module}
+python3 prerequisite_changes.py ${test_service} ${target}
 
 result=`echo $?`
 

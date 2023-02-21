@@ -1,0 +1,6 @@
+robotframework
+requests
+robotframework-requests
+robotframework-jsonlibrary
+wheel
+pyyaml

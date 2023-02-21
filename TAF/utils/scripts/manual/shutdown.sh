@@ -8,10 +8,17 @@ GLOBAL_VAR_DIR=${WORK_DIR}/TAF/config/global_variables.py
 if [ -f kvm_data.json ]
 then
     pid=`jq '.pid' kvm_data.json`
-    kill -9 ${pid}
-    rm kvm_data.json
+    kill -2 ${pid}
+    result=`echo $?`
 
-    sed -i '0,/BASE_URL = .*/ s//BASE_URL = ""/' $GLOBAL_VAR_DIR
+    if [ $result = "1" ]
+    then
+        echo "<<<< Edgex shutdown failed >>>>"
+    else
+        rm kvm_data.json
+        sed -i '0,/BASE_URL = .*/ s//BASE_URL = ""/' $GLOBAL_VAR_DIR
+        echo "<<<< Edgex shutdown successfully >>>>"
+    fi
 else
     echo ""
     echo "###################"
