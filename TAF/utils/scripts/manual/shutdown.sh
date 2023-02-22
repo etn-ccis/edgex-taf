@@ -8,7 +8,8 @@ GLOBAL_VAR_DIR=${WORK_DIR}/TAF/config/global_variables.py
 if [ -f kvm_data.json ]
 then
     pid=`jq '.pid' kvm_data.json`
-    kill -2 ${pid}
+    # currently we are using kill -9 but would prefer kill -2 in the future
+    kill -9 ${pid}
     result=`echo $?`
 
     if [ $result = "1" ]

@@ -14,8 +14,8 @@ sh trigger.sh --service functionalTest/V2-API/<service_name> --auth <username/pa
    * username/password: this will be username and password of board. if user will not provide then it will
                         take default as admin/admin
    * port: this is edgex client port. as of now we will take as 8002
-   * module: this will be any module like KVM or STM
-   * ip: this will be IP address of modue. if you give module name as KVM then there is no need to provide IP adress
+   * target: this will be any target device like KVM or STM
+   * ip: this will be IP address of target device. if you give target name as KVM then there is no need to provide IP adress
 
 
 The execution flow of this script will be as follow

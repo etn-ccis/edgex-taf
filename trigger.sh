@@ -19,7 +19,7 @@
 if [ $# -eq 0 ]
 then
     echo "No arguments supplied, please provide data"
-    echo "Usage: sh trigger.sh --service functionalTest/V2-API/<any_service> --auth <username/password> --port <port_number> --target <Target_module> --ip <ip_address>"
+    echo "Usage: sh trigger.sh --service functionalTest/V2-API/<any_service> --auth <username/password> --port <port_number> --target <Target_device> --ip <ip_address>"
     exit 1
 fi
 
@@ -108,20 +108,22 @@ then
 fi
 
 # creating VENV if it does not exist
-if [[ "$VIRTUAL_ENV" != " " ]]
+if [ ! -d "env_taf" ]
 then
     echo "=============="
     echo "creating VENV"
     echo "=============="
-    python3 -m venv .
-    source ./bin/activate
+    python3 -m venv env_taf
+    source env_taf/bin/activate
     python3 -m pip install -U pip
-    pip3 install -U virtualenv
+else
+    source env_taf/bin/activate
+    python3 -m pip install -U pip
 fi
 
 # Install Robot Framework related Libraries
 echo "<<<<< Installing Robot framework related libraries >>>>>"
-python3 -m pip install -r requirements_eaton.txt
+pip3 install -r requirements.txt
 sleep 1
 
 # Install TAF common:
@@ -131,7 +133,7 @@ sleep 1
 
 # Install dependency lib
 echo "<<<<< Installing TAF common related libraries >>>>>"
-python3 -m pip install -r ./edgex-taf-common/requirements.txt
+pip3 install -r ./edgex-taf-common/requirements.txt
 
 # Install edgex-taf-common as lib
 pip3 install ./edgex-taf-common
