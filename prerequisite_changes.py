@@ -105,10 +105,9 @@ def general_changes():
              "def check_service_startup(d, token):",
              "    SettingsInfo().constant.BASE_URL=open(os.getenv(\"DATA_FILE\"), \"r\").read()\n    SettingsInfo().constant.BASE_URL=SettingsInfo("
              ").constant.BASE_URL[:-1]" + "\n")
-    if target == "KVM" or target == "kvm":
-        add_data("TAF/testCaseModules/keywords/common/commonKeywords.robot",
-                 "Set suite variable  ${response}  ${resp.status_code}",
-                 "    Set suite variable  ${body}  ${resp.json()}\n")
+    add_data("TAF/testCaseModules/keywords/common/commonKeywords.robot",
+             "Set suite variable  ${response}  ${resp.status_code}",
+             "    Set suite variable  ${body}  ${resp.json()}\n")
 
 
 def main():
@@ -117,55 +116,54 @@ def main():
         # This is core-metadata service specific changes
         change_auth_type("TAF/testCaseModules/keywords/core-metadata/coreMetadataAPI.robot")
         change_port("8443/core-metadata", "8002/metadata")
-        if target == "KVM" or target == "kvm":
-            # add a variable in GET-Positive.robot file which contain response device length
-            add_data("TAF/testScenarios/functionalTest/V2-API/core-metadata/device/GET-Positive.robot",
-                     "When Query All Devices\n",
-                     "    ${length}=    Get Length    $body[device]\n")
-            # add a variable in GET-Positive.robot file which contain response object length with offset as 2
-            add_data("TAF/testScenarios/functionalTest/V2-API/core-metadata/device/GET-Positive.robot",
-                     "When Query All Devices With offset=2\n",
-                     "    ${length}=    Get Length    $body[object]\n")
-            # Replacing device count 7 with velue of variable length in GET-Positive.robot file
-            replace("TAF/testScenarios/functionalTest/V2-API/core-metadata/device/GET-Positive.robot",
-                    "== 7",
-                    "== ${length}")
-            # Replacing device count 5 with velue of variable length with offset as 2 in GET-Positive.robot file
-            replace("TAF/testScenarios/functionalTest/V2-API/core-metadata/device/GET-Positive.robot",
-                    "== 5",
-                    "== ${length}-2")
-            # add a variable in GET-Positive.robot file which contain response device profile length
-            add_data("TAF/testScenarios/functionalTest/V2-API/core-metadata/deviceprofile/GET-Positive.robot",
-                     "When Query All Device Profiles\n",
-                     "    ${length}=    Get Length    $body[profiles]\n")
-            # add a variable in GET-Positive.robot file which contain response object length with offset as 2
-            add_data("TAF/testScenarios/functionalTest/V2-API/core-metadata/deviceprofile/GET-Positive.robot",
-                     "When Query All Device Profiles With offset=2\n",
-                     "    ${length}=    Get Length    $body[object]\n")
-            # Replacing device profile count 8 with velue of variable length in GET-Positive.robot file
-            replace("TAF/testScenarios/functionalTest/V2-API/core-metadata/deviceprofile/GET-Positive.robot",
-                    "== 8",
-                    "== ${length}")
-            # Replacing device profile count 5 with velue of variable length with offset as 2 in GET-Positive.robot file
-            replace("TAF/testScenarios/functionalTest/V2-API/core-metadata/deviceprofile/GET-Positive.robot",
-                    "== 6",
-                    "== ${length}")
-            # add a variable in GET-Positive.robot file which contain response device service length
-            add_data("TAF/testScenarios/functionalTest/V2-API/core-metadata/deviceservice/GET-Positive.robot",
-                     "When Query All Device Services\n",
-                     "    ${length}=    Get Length    $body[object]\n")
-            # add a variable in GET-Positive.robot file which contain response object length with offset as 2
-            add_data("TAF/testScenarios/functionalTest/V2-API/core-metadata/deviceservice/GET-Positive.robot",
-                     "When Query All Device Services With offset=2\n",
-                     "    ${length}=    Get Length    $body[object]\n")
-            # Replacing device service count 6 with velue of variable length in GET-Positive.robot file
-            replace("TAF/testScenarios/functionalTest/V2-API/core-metadata/deviceservice/GET-Positive.robot",
-                    "== 6",
-                    "== ${length}-2")
-            # Replacing device service count 5 with velue of variable length with offset as 2 in GET-Positive.robot file
-            replace("TAF/testScenarios/functionalTest/V2-API/core-metadata/deviceservice/GET-Positive.robot",
-                    "== 4",
-                    "== ${length}-4")
+        # add a variable in GET-Positive.robot file which contain response device length
+        add_data("TAF/testScenarios/functionalTest/V2-API/core-metadata/device/GET-Positive.robot",
+                 "When Query All Devices\n",
+                 "    ${length}=    Get Length    ${body}[devices]\n")
+        # add a variable in GET-Positive.robot file which contain response object length with offset as 2
+        add_data("TAF/testScenarios/functionalTest/V2-API/core-metadata/device/GET-Positive.robot",
+                 "When Query All Devices With offset=2\n",
+                 "    ${length}=    Get Length    ${body}[devices]\n")
+        # Replacing device count 7 with velue of variable length in GET-Positive.robot file
+        replace("TAF/testScenarios/functionalTest/V2-API/core-metadata/device/GET-Positive.robot",
+                "== 7",
+                "== ${length}")
+        # Replacing device count 5 with velue of variable length with offset as 2 in GET-Positive.robot file
+        replace("TAF/testScenarios/functionalTest/V2-API/core-metadata/device/GET-Positive.robot",
+                "== 5",
+                "== ${length}")
+        # add a variable in GET-Positive.robot file which contain response device profile length
+        add_data("TAF/testScenarios/functionalTest/V2-API/core-metadata/deviceprofile/GET-Positive.robot",
+                 "When Query All Device Profiles\n",
+                 "    ${length}=    Get Length    ${body}[profiles]\n")
+        # add a variable in GET-Positive.robot file which contain response object length with offset as 2
+        add_data("TAF/testScenarios/functionalTest/V2-API/core-metadata/deviceprofile/GET-Positive.robot",
+                 "When Query All Device Profiles With offset=2\n",
+                 "    ${length}=    Get Length    ${body}[profiles]\n")
+        # Replacing device profile count 8 with velue of variable length in GET-Positive.robot file
+        replace("TAF/testScenarios/functionalTest/V2-API/core-metadata/deviceprofile/GET-Positive.robot",
+                "== 8",
+                "== ${length}")
+        # Replacing device profile count 5 with velue of variable length with offset as 2 in GET-Positive.robot file
+        replace("TAF/testScenarios/functionalTest/V2-API/core-metadata/deviceprofile/GET-Positive.robot",
+                "== 6",
+                "== ${length}")
+        # add a variable in GET-Positive.robot file which contain response device service length
+        add_data("TAF/testScenarios/functionalTest/V2-API/core-metadata/deviceservice/GET-Positive.robot",
+                 "When Query All Device Services\n",
+                 "    ${length}=    Get Length    ${body}[services]\n")
+        # add a variable in GET-Positive.robot file which contain response object length with offset as 2
+        add_data("TAF/testScenarios/functionalTest/V2-API/core-metadata/deviceservice/GET-Positive.robot",
+                 "When Query All Device Services With offset=2\n",
+                 "    ${length}=    Get Length    ${body}[services]\n")
+        # Replacing device service count 6 with velue of variable length in GET-Positive.robot file
+        replace("TAF/testScenarios/functionalTest/V2-API/core-metadata/deviceservice/GET-Positive.robot",
+                "== 6",
+                "== ${length}")
+        # Replacing device service count 5 with velue of variable length with offset as 2 in GET-Positive.robot file
+        replace("TAF/testScenarios/functionalTest/V2-API/core-metadata/deviceservice/GET-Positive.robot",
+                "== 4",
+                "== ${length}")
     if service == "core-data":
         # TBD
         print("This is core-data service related changes")
