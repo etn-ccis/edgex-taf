@@ -118,7 +118,6 @@ then
     python3 -m pip install -U pip
 else
     source env_taf/bin/activate
-    python3 -m pip install -U pip
 fi
 
 # Install Robot Framework related Libraries
