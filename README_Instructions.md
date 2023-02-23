@@ -1,6 +1,6 @@
-# EdgeX-TAF execution in Pipeline
+# EdgeX-TAF execution in Pipeline as well as local environment
 
-This is created as an intro to understand how EdgeX-TAF will be executed in pipeline
+This is created as an intro to understand how EdgeX-TAF will be execute in pipeline or local environment
 
 ## trigger.sh
 
@@ -30,3 +30,26 @@ The execution flow of this script will be as follow
 ## prerequisite_changes.py
 
 This file contains required modification to be done in EdgeX-TAF before execution start
+
+
+## There are some more scripts which are under TAF/utils/scripts/manual/ directory and will be use for non docker environment execution.
+
+##### 1. api-gateway-token.sh
+         In non docker mode we are using X-Auth method. So, this script is used to create X-Auth-Token with curl command. 
+         Here this script will be called while testsuite setup, teardown and execution of robot tests.
+
+##### 2. deploy-edgex.sh
+         This is first script which will be called to deploy edgex when we start execution. So basically if our target device will be KVM 
+         then it will start QEMU and set IP address of QUMU to BASE_URL in global_variables.py file. If target device will other devices 
+         then directly it will set IP address of device to BASE_URL in global_variables.py file.
+         (Note: if execution will be in local environment then remove "--yocto --conn_method=http" from this file. so line should be like 
+                "python3 px_red/target/utilities/start_kvm.py &> kvm.log &")
+
+##### 3. shutdown.sh
+         This script is the last script which will shutdown edgex and do some cleanup task.
+
+##### 4. restart-services.sh
+         This script is used to restart any micro service.
+
+##### 5. stop-services.sh
+         This script is used to stop any micro service.

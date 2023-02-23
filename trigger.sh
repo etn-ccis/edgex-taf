@@ -137,8 +137,12 @@ pip3 install -r ./edgex-taf-common/requirements.txt
 # Install edgex-taf-common as lib
 pip3 install ./edgex-taf-common
 
-# Change general modification as well as service specific modification for test execution
-python3 prerequisite_changes.py ${test_service} ${target}
+if [ ! -f ${WORK_DIR}/working_dir/status.txt ]
+then
+    # Change general modification as well as service specific modification for test execution
+    python3 prerequisite_changes.py ${test_service} ${target}
+    echo done > ${WORK_DIR}/working_dir/status.txt
+fi
 
 result=`echo $?`
 

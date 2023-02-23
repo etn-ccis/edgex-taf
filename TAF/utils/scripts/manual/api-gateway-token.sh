@@ -1,4 +1,4 @@
-# This script will generate X-Auth-Token from Swagger login
+# This script will generate X-Auth-Token
 
 #!/bin/bash
 
