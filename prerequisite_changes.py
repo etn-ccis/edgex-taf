@@ -97,8 +97,13 @@ def general_changes():
         3. set IP address of qemu to "BASE_URL"
     """
     global_variable("TAF/config/global_variables.py")
-    change_auth_type("TAF/testCaseModules/keywords/setup/startup_checker.py")
     change_auth_type("TAF/testCaseModules/keywords/common/commonKeywords.robot")
+    replace("TAF/testCaseModules/keywords/setup/startup_checker.py",
+            "\"Authorization\": \"Bearer {}\"",
+            "\"X-Auth-Token= {}\"")
+    replace("TAF/testCaseModules/keywords/setup/edgex.py",
+            "checker.check_services_startup",
+            "#checker.check_services_startup")
     add_data("TAF/testCaseModules/keywords/setup/startup_checker.py",
              "import subprocess", "import os" + "\n")
     add_data("TAF/testCaseModules/keywords/setup/startup_checker.py",

@@ -6,9 +6,9 @@ GLOBAL_VAR_DIR=${WORK_DIR}/TAF/config/global_variables.py
 
 if [ ${TARGET} ==  "KVM" ] || [ ${TARGET} ==  "kvm" ]
 then
-    cd ${WORK_DIR}/../edge-linux-test-pytest
+    cd ${PYTEST_PATH}
     echo "<<<<< Installing pytest related libraries >>>>>"
-    python3 -m pip install -r ${HOME}/edge-linux-test-pytest/requirements.txt
+    timeout 2m pip3 install -r ${HOME}/edge-linux-test-pytest/requirements.txt --use-pep517
 
     if ps ax | grep -v grep | grep start_kvm.py > /dev/null
     then
@@ -16,6 +16,11 @@ then
         echo "KVM is already up"
         echo "#################"
     else
+        if [ -f kvm_data.json ]
+        then
+            rm kvm_data.json
+        fi
+
         if [ -f ${DATA_DIR}/data.txt ]
         then
             rm ${DATA_DIR}/data.txt
