@@ -185,7 +185,7 @@ then
 fi
 
 # Deploy edgex
-timeout 3m python3 -m TUC --exclude Skipped --include deploy-base-service -u deploy.robot -p default
+timeout 5m python3 -m TUC --exclude Skipped --include deploy-base-service -u deploy.robot -p default
 result=`echo $?`
 if [ $result != 0 ]
 then
