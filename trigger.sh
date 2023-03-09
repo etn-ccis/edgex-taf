@@ -174,15 +174,14 @@ if [ ! -f ${WORK_DIR}/working_dir/status.txt ]
 then
     # Change general modification as well as service specific modification for test execution
     python3 prerequisite_changes.py ${test_service} ${target}
+
+    result=`echo $?`
+    if [ $result != 0 ]
+    then
+        echo "Something went wrong."
+        exit 1
+    fi
     echo done > ${WORK_DIR}/working_dir/status.txt
-fi
-
-result=`echo $?`
-
-if [ $result != 0 ]
-then
-    echo "Something went wrong."
-    exit 1
 fi
 
 # Deploy edgex
