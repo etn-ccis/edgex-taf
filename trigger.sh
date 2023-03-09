@@ -106,24 +106,27 @@ export AUTH=${auth}
 export PORT=${port}
 export TARGET=${target}
 
-if [ "$path" ] # will check if user will provide path for edge-linux-test-pytest repo
+if [ $target == "KVM" ] || [ $target == "kvm" ]
 then
-    if [ ! -d "$path" ]
+    if [ "$path" ] # will check if user will provide path for edge-linux-test-pytest repo
     then
-        echo "Can not find edge-liux-test-pytest repo path"
-        exit 1
-    else
-        export PYTEST_PATH=${path}
+        if [ ! -d "$path" ]
+        then
+            echo "Can not find edge-liux-test-pytest repo path"
+            exit 1
+        else
+            export PYTEST_PATH=${path}
+        fi
+    else # if user did not provide path then will check default path
+        if [ ! -d "../edge-linux-test-pytest/" ]
+        then
+            echo "Can not find edge-linux-test-pytest repo default path"
+            exit 1
+        else
+            path="${WORK_DIR}/../edge-linux-test-pytest"
+            export PYTEST_PATH=${path}
+       fi
     fi
-else # if user did not provide path then will check default path
-    if [ ! -d "../edge-linux-test-pytest/" ]
-    then
-        echo "Can not find edge-linux-test-pytest repo default path"
-        exit 1
-    else
-        path="${WORK_DIR}/../edge-linux-test-pytest"
-        export PYTEST_PATH=${path}
-   fi
 fi
 
 if [ $target == "STM" ] || [ $target == "stm" ]
