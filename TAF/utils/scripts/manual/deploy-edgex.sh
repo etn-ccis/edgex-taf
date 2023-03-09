@@ -8,7 +8,7 @@ if [ ${TARGET} ==  "KVM" ] || [ ${TARGET} ==  "kvm" ]
 then
     cd ${PYTEST_PATH}
     echo "<<<<< Installing pytest related libraries >>>>>"
-    timeout 2m pip3 install -r ${HOME}/edge-linux-test-pytest/requirements.txt --use-pep517
+    timeout 2m pip3 install -r requirements.txt --use-pep517
 
     if ps ax | grep -v grep | grep start_kvm.py > /dev/null
     then
