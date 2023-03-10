@@ -9,7 +9,9 @@ This is created as an intro to understand how EdgeX-TAF will be execute in pipel
         **sh trigger.sh --service functionalTest/V2-API/<service_name> --auth <username/password> --port <port_number> --target <target_device_under_test> --ip <IP_address> --path <path_of_edge-linux-test_pytest_repo>**
 
   2. In Local System
-      * Remove "--yocto --conn_method=http" from TAF/utils/scripts/manual/deploy-edgex.sh file then run command:
+      * Remove "--yocto --conn_method=http" from TAF/utils/scripts/manual/deploy-edgex.sh file 
+        so line should be like "python3 px_red/target/utilities/start_kvm.py &> kvm.log &" then 
+        run command:
 	**sh trigger.sh --service functionalTest/V2-API/<service_name> --auth <username/password> --port <port_number> --target <target_device_under_test> --ip <IP_address> --path <path_of_edge-linux-test_pytest_repo>**
 
 
