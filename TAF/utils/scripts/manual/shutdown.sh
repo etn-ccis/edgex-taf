@@ -2,7 +2,7 @@
 
 #!/bin/sh
 
-cd ${WORK_DIR}/../edge-linux-test-pytest
+cd ${PYTEST_PATH}
 GLOBAL_VAR_DIR=${WORK_DIR}/TAF/config/global_variables.py
 
 if [ -f kvm_data.json ]
