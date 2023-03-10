@@ -2,11 +2,22 @@
 
 This is created as an intro to understand how EdgeX-TAF will be execute in pipeline or local environment
 
+# How to Run
+
+  1. In Pipeline
+      * Run command as
+        **sh trigger.sh --service functionalTest/V2-API/<service_name> --auth <username/password> --port <port_number> --target <target_device_under_test> --ip <IP_address> --path <path_of_edge-linux-test_pytest_repo>**
+
+  2. In Local System
+      * Remove "--yocto --conn_method=http" from TAF/utils/scripts/manual/deploy-edgex.sh file then run below command
+	**sh trigger.sh --service functionalTest/V2-API/<service_name> --auth <username/password> --port <port_number> --target <target_device_under_test> --ip <IP_address> --path <path_of_edge-linux-test_pytest_repo>**
+
+
 ## trigger.sh
 
 This is main script which will be triggered from pipeline. To run this script user will need to have python 3.8.10 version
 
-user will need to run script as below from pipeline
+user will need to run script as below from pipeline or local system
 
 sh trigger.sh --service functionalTest/V2-API/<service_name> --auth <username/password> --port <port_number> --target <target_device_under_test> --ip <IP_address> --path <path_of_edge-linux-test_pytest_repo>
 
@@ -16,7 +27,7 @@ sh trigger.sh --service functionalTest/V2-API/<service_name> --auth <username/pa
    * port: this is edgex client port. as of now we will take as 8002
    * target: this will be any target device like KVM or STM
    * ip: this will be IP address of target device. if you give target name as KVM then there is no need to provide IP adress
-   * path: user will need to give a specific path of "edge-linux-test-pytest" repo. if user will not give path then script will take default path as "${WORK_DIR}/../edge-linux-test-pytest".
+   * path: If target is KVM then user will need to give a specific path of "edge-linux-test-pytest" repo. if user will not give path then script will take default path as "${WORK_DIR}/../edge-linux-test-pytest".
            If user will give wrong path then script will not execute.
 
 
