@@ -150,6 +150,12 @@ then
     python3 -m venv env_taf
     source env_taf/bin/activate
     timeout 2m python3 -m pip install -U pip
+    result=`echo $?`
+    if [ $result != 0 ]
+    then
+        echo "Timeout while creating virtual environment !!!"
+        exit 1
+    fi
 else
     source env_taf/bin/activate
 fi
@@ -157,6 +163,12 @@ fi
 # Install Robot Framework related Libraries
 echo "<<<<< Installing Robot framework related libraries >>>>>"
 timeout 2m pip3 install -r requirements.txt --use-pep517
+result=`echo $?`
+if [ $result != 0 ]
+then
+    echo "Timeout while Installing Robot Framework related Libraries !!!"
+    exit 1
+fi
 sleep 1
 
 if [ ! -d "edgex-taf-common" ]
@@ -168,9 +180,21 @@ then
     # Install dependency lib
     echo "<<<<< Installing TAF common related libraries >>>>>"
     timeout 2m pip3 install -r ./edgex-taf-common/requirements.txt --use-pep517
+    result=`echo $?`
+    if [ $result != 0 ]
+    then
+        echo "Timeout while Installing TAF common related libraries !!!"
+        exit 1
+    fi
 
     # Install edgex-taf-common as lib
     timeout 2m pip3 install ./edgex-taf-common --use-pep517
+    result=`echo $?`
+    if [ $result != 0 ]
+    then
+        echo "Timeout while Installing edgex-taf-common !!!"
+        exit 1
+    fi
 fi
 
 if [ ! -f ${WORK_DIR}/working_dir/status.txt ]
@@ -204,7 +228,13 @@ do
 done
 
 # Start test case execution
-python3 -m TUC --exclude Skipped -t $service -p default
+timeout 10m python3 -m TUC --exclude Skipped -t $service -p default
+result=`echo $?`
+if [ $result != 0 ]
+then
+    echo "Timeout while executing Test suite!!!"
+    exit 1
+fi
 
 while [ ! -f TAF/testArtifacts/reports/edgex/log.html ]
 do
@@ -215,7 +245,14 @@ done
 cp TAF/testArtifacts/reports/edgex/log.html ${DATA_DIR}
 
 # Shutdown edgex
-python3 -m TUC --exclude Skipped --include shutdown-edgex -u shutdown.robot -p default
+timeout 2m python3 -m TUC --exclude Skipped --include shutdown-edgex -u shutdown.robot -p default
+result=`echo $?`
+if [ $result != 0 ]
+then
+    echo "Timeout !!!"
+    echo "Failed to shutdown edgex. Exit from script"
+    exit 1
+fi
 cp TAF/testArtifacts/reports/edgex/log.html ${DATA_DIR}/shutdown.html
 
 if [ $VIRTUAL_ENV ]

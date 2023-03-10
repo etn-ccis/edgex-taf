@@ -6,9 +6,16 @@ GLOBAL_VAR_DIR=${WORK_DIR}/TAF/config/global_variables.py
 
 if [ ${TARGET} ==  "KVM" ] || [ ${TARGET} ==  "kvm" ]
 then
+    #cd ${WORK_DIR}/../edge-linux-test-pytest
     cd ${PYTEST_PATH}
     echo "<<<<< Installing pytest related libraries >>>>>"
-    timeout 2m pip3 install -r requirements.txt --use-pep517
+    timeout 2m pip3 install -r ${HOME}/edge-linux-test-pytest/requirements.txt --use-pep517
+    result=`echo $?`
+    if [ $result != 0 ]
+    then
+        echo "Timeout while installing pytest related libraries !!!"
+        exit 1
+    fi
 
     if ps ax | grep -v grep | grep start_kvm.py > /dev/null
     then
