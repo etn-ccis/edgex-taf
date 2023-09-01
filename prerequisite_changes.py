@@ -100,8 +100,12 @@ def general_changes():
     change_auth_type("TAF/testCaseModules/keywords/common/commonKeywords.robot")
     change_auth_type("TAF/testCaseModules/keywords/core-metadata/coreMetadataAPI.robot")
     change_port("8443/core-metadata", "8002/metadata")
-    change_auth_type("TAF/testCaseModules/keywords/core-command/coreCommandAPI.robot")
     change_port("8443/core-command", "8002/command")
+    change_port("8443/core-data", "8002/coredata")
+    change_port("8443/support-notifications", "8002/notifications")
+    change_port("8443/support-scheduler", "8002/scheduler")
+    change_auth_type("TAF/testCaseModules/keywords/core-command/coreCommandAPI.robot")
+    
     replace("TAF/testCaseModules/keywords/setup/startup_checker.py",
             "\"Authorization\": \"Bearer {}\"",
             "\"X-Auth-Token= {}\"")
@@ -228,7 +232,53 @@ def main():
         replace("TAF/testScenarios/functionalTest/V2-API/core-command/device/GET-Positive.robot",
                 "== 6",
                 "== ${length}")
+    if service == "4_ping_response_time" or service=="performance-metrics-collection":
+        # Added dependent library in test robot file
+        add_data("TAF/testScenarios/performanceTest/performance-metrics-collection/4_ping_response_time/ping_response_time.robot", 
+                 "Resource        TAF/testCaseModules/keywords/common/commonKeywords.robot\n",
+                 "Variables         TAF/config/performance-metrics/configuration.py\n")
+        # Remove service ping as service is not available in swagger but was available in docker container
+        replace("TAF/testScenarios/performanceTest/performance-metrics-collection/4_ping_response_time/ping_response_time.robot",
+             "${SYS_MGMT_RES_LIST}=  Ping API for service  sys-mgmt-agent  ${SYS_MGMT_AGENT_PORT}",
+             "# ${SYS_MGMT_RES_LIST}=  Ping API for service  sys-mgmt-agent  ${SYS_MGMT_AGENT_PORT}")
+        # Remove service ping as service is not available in swagger but was available in docker container
+        replace("TAF/testScenarios/performanceTest/performance-metrics-collection/4_ping_response_time/ping_response_time.robot",
+             "Record response   edgex-sys-mgmt-agent",
+             "# Record response   edgex-sys-mgmt-agent")
+        # Remove service ping as service is not available in swagger but was available in docker container
+        replace("TAF/testScenarios/performanceTest/performance-metrics-collection/4_ping_response_time/ping_response_time.robot",
+             "${DEVICE_REST_RES_LIST}=  Ping API for service  device-rest  ${DEVICE_REST_PORT}",
+             "# ${DEVICE_REST_RES_LIST}=  Ping API for service  device-rest  ${DEVICE_REST_PORT}")
+        replace("TAF/testScenarios/performanceTest/performance-metrics-collection/4_ping_response_time/ping_response_time.robot",
+             "Record response   edgex-device-rest",
+             "# Record response   edgex-device-rest")
+        # Remove service ping as service is not available in swagger but was available in docker container
+        replace("TAF/testScenarios/performanceTest/performance-metrics-collection/4_ping_response_time/ping_response_time.robot",
+             "${APP_SERVICE_RES_LIST}=  Ping API for service  app-service  ${APP_SERVICE_RULES_PORT}",
+             "# ${APP_SERVICE_RES_LIST}=  Ping API for service  app-service  ${APP_SERVICE_RULES_PORT}")
+        # Remove service ping as service is not available in swagger but was available in docker container
+        replace("TAF/testScenarios/performanceTest/performance-metrics-collection/4_ping_response_time/ping_response_time.robot",
+             "Record response   edgex-app-rules-engine",
+             "# Record response   edgex-app-rules-engine")
+        # Remove service ping as service is not available in swagger but was available in docker container
+        replace("TAF/testScenarios/performanceTest/performance-metrics-collection/4_ping_response_time/ping_response_time.robot",
+             "${DEVICE_VIRTUAL_RES_LIST}=  Ping API for service  device-virtual  ${DEVICE_VIRTUAL_PORT}",
+             "# ${DEVICE_VIRTUAL_RES_LIST}=  Ping API for service  device-virtual  ${DEVICE_VIRTUAL_PORT}")
+        # Remove service ping as service is not available in swagger but was available in docker container
+        replace("TAF/testScenarios/performanceTest/performance-metrics-collection/4_ping_response_time/ping_response_time.robot",
+             "Record response   edgex-device-virtual",
+             "# Record response   edgex-device-virtual")
+        # Replace Port in python file from 8443 to 8002, later on we can change it to 443
+        replace("TAF/testCaseModules/keywords/performance-metrics-collection/PingResponse.py", "8443", "8002")
+        # Replace Token method from BEARER to X-Auth-Token
+        swap("TAF/testCaseModules/keywords/performance-metrics-collection/PingResponse.py",
+             "header = {\"Authorization\": \"Bearer {}\".format(token)}", 
+             "header = {\"X-Auth-Token\": token}")
+        # Imported data from configuration.py to profile_constant variable as in docker mode also this variable is setting
+        add_data("TAF/testCaseModules/keywords/performance-metrics-collection/PingResponse.py",
+                 "def show_aggregation_table_in_html():\n", 
+                 "    profile_constant = __import__(\"TAF.config.performance-metrics.configuration\", fromlist=['configuration'])\n    SettingsInfo().add_name('profile_constant', profile_constant)\n") 
 
-
+  
 if __name__ == "__main__":
     main()
