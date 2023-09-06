@@ -68,16 +68,35 @@ done
 
 # parsing service name from functionalTest/V2-API/<core-service>
 test_service=`echo $service | awk -F"/" '{print $NF}'`
+parent_service=$(echo "$service" | cut -d'/' -f1)
 service_flag=0
 
-service_list=(core-data
-              core-metadata
-              core-command
-              app-serice
-              support-notifications
-              support-schedular
-              system-agent
-             )
+if [ $parent_service == "functionalTest" ]
+then
+    service_list=(
+                  core-data
+                  core-metadata
+                  core-command
+                  app-serice
+                  support-notifications
+                  support-schedular
+                  system-agent
+                 )
+fi
+
+if [ $parent_service == "performanceTest" ]
+then
+    service_list=(
+                  performance-metrics-collection 
+                  0_retrieve_system_info
+                  1_retrieve_footprint
+                  2_service_startup_time
+                  3_resource_usage_with_autoevent
+                  4_ping_response_time
+                  5_event_exported_time
+                  9_summary_reports
+                 )
+fi
 
 for str in ${service_list[@]}; do
   if [ $str == $test_service ]
