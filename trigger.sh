@@ -146,10 +146,7 @@ then
             export PYTEST_PATH=${path}
        fi
     fi
-fi
-
-if [ $target == "STM" ] || [ $target == "stm" ]
-then
+else
     echo $ip > $DATA_FILE
 fi
 
