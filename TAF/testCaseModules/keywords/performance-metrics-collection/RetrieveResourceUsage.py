@@ -67,6 +67,10 @@ class RetrieveResourceUsage(object):
 
 
 def get_Cpu_Mem_Usage(server, auth, serviceName, command_type):
+    """
+    This function is created to fetch cpu usage and memory usage of services running in non-docker environment
+    We replaced some API which are fetching same from docker container.
+    """
     user = auth.split("/")[0]
     pswd = auth.split("/")[1]
     ssh_client = paramiko.SSHClient()

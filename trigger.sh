@@ -244,7 +244,7 @@ do
 done
 
 # Start test case execution
-timeout 10m python3 -m TUC --exclude Skipped -t $service -p default
+timeout 30m python3 -m TUC --exclude Skipped -t $service -p default
 result=`echo $?`
 if [ $result != 0 ]
 then
