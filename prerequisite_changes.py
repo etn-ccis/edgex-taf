@@ -236,7 +236,7 @@ def main():
         # Added dependent library in test robot file
         add_data("TAF/testScenarios/performanceTest/performance-metrics-collection/4_ping_response_time/ping_response_time.robot", 
                  "Resource        TAF/testCaseModules/keywords/common/commonKeywords.robot\n",
-                 "Variables         TAF/config/performance-metrics/configuration.py\n")
+                 "Variables       TAF/config/performance-metrics/configuration.py\n")
         # Remove service ping as service is not available in swagger but was available in docker container
         replace("TAF/testScenarios/performanceTest/performance-metrics-collection/4_ping_response_time/ping_response_time.robot",
              "${SYS_MGMT_RES_LIST}=  Ping API for service  sys-mgmt-agent  ${SYS_MGMT_AGENT_PORT}",
@@ -278,7 +278,11 @@ def main():
         add_data("TAF/testCaseModules/keywords/performance-metrics-collection/PingResponse.py",
                  "def show_aggregation_table_in_html():\n", 
                  "    profile_constant = __import__(\"TAF.config.performance-metrics.configuration\", fromlist=['configuration'])\n    SettingsInfo().add_name('profile_constant', profile_constant)\n") 
-
+    if service == "3_resource_usage_with_autoevent" or service=="performance-metrics-collection":
+        # Added dependent library in test robot file
+        add_data("TAF/testScenarios/performanceTest/performance-metrics-collection/3_resource_usage_with_autoevent/resource_usage_with_autoevent.robot", 
+                 "Resource        TAF/testCaseModules/keywords/common/commonKeywords.robot\n",
+                 "Variables       TAF/config/performance-metrics/configuration.py\n")
   
 if __name__ == "__main__":
     main()

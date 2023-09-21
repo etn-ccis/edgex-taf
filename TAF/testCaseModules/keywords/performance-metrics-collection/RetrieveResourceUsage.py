@@ -10,20 +10,16 @@
 """
 
 import os
+import paramiko
 import traceback
 import data_utils
 from TUC.data.SettingsInfo import SettingsInfo
 import docker
 from robot.api import logger
 
-client = docker.from_env()
 
 global services
-services = ["edgex-core-consul", "edgex-core-data", "edgex-core-metadata", "edgex-core-command",
-            "edgex-support-notifications", "edgex-support-scheduler", "edgex-app-rules-engine",
-            "edgex-sys-mgmt-agent", "edgex-device-virtual", "edgex-device-rest", "edgex-kuiper", "edgex-redis"]
-
-secty_services = ["edgex-security-secretstore-setup", "edgex-kong", "edgex-kong-db", "edgex-vault", "edgex-security-bootstrapper"]
+services = ["edgex-core-data", "edgex-core-metadata", "edgex-core-command", "edgex-support-notifications", "edgex-device-virtual", "edgex-kuiper"]
 
 
 class RetrieveResourceUsage(object):
@@ -32,10 +28,8 @@ class RetrieveResourceUsage(object):
         self._result = ""
 
     def get_test_services(self):
-        # Add security services when security enabled
-        security_enabled = os.getenv("SECURITY_SERVICE_NEEDED")
-        if security_enabled == 'true':
-            services.extend(secty_services)
+        profile_constant = __import__("TAF.config.performance-metrics.configuration", fromlist=['configuration'])
+        SettingsInfo().add_name('profile_constant', profile_constant)
         return services
 
     def retrieve_cpu_and_memory_usage(self, test_services):
@@ -72,30 +66,46 @@ class RetrieveResourceUsage(object):
         show_the_mem_aggregation_table_in_html(mem_usage)
 
 
-def fetch_by_service(service):
-    containerName = service
-    usage = {}
+def get_Cpu_Mem_Usage(server, auth, serviceName, command_type):
+    """
+    This function is created to fetch cpu usage and memory usage of services running in non-docker environment
+    We replaced some API which are fetching same from docker container.
+    """
+    user = auth.split("/")[0]
+    pswd = auth.split("/")[1]
+    ssh_client = paramiko.SSHClient()
+    ssh_client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+    ssh_session = None
+    server = server.rstrip('\n')
     try:
-        container = client.containers.get(containerName)
+        ssh_client.connect(server, username=user, password=pswd)
+        if command_type == "cpu":
+            command = "top -b -n 1 | grep "+serviceName+" | awk '{print $6}'"
+        if command_type == "memory":
+            command = "echo '"+pswd+"' | sudo -S pmap -x $(pgrep "+serviceName+") | grep total | awk '{print $2}'"
+        ssh_session = ssh_client.get_transport().open_session()
+        ssh_session.exec_command(command)
+        output = ssh_session.recv(1024).decode("utf-8")
+        lines = output.split('\n')
+        value = lines[0].strip()
+        ssh_client.close()
+        return(value)
+    except Exception as e:
+        print("An error occurred:", str(e))
 
-        execResult = container.stats(stream=False)
-        cpuUsage = calculateCPUPercent(execResult)
-        memoryUsage = calculate_memory_usage(execResult)
 
-        usage["cpuUsage"] = format(cpuUsage, '.2f')
-        usage["memoryUsage"] = format(int(memoryUsage) / 1000000, '.2f')
-
-    except docker.errors.NotFound as error:
-        usage["cpuUsage"] = 0
-        usage["memoryUsage"] = 0
-        logger.error(containerName + " container not found")
-        logger.error(error)
-    except:
-        usage["cpuUsage"] = 0
-        usage["memoryUsage"] = 0
-        logger.error(containerName + " fail to fetch resource usage")
-        logger.error(traceback.format_exc())
-
+def fetch_by_service(service):
+    data_file = os.getenv("DATA_FILE")
+    with open(data_file,'r') as file:
+        ip = str(file.read())
+    auth = os.getenv("AUTH")
+    serviceName = service.split("-", 1)
+    serviceName = serviceName[1]
+    usage = {}
+    cpuUsage = get_Cpu_Mem_Usage(ip, auth, serviceName, "cpu")
+    memoryUsage = get_Cpu_Mem_Usage(ip, auth, serviceName, "memory")
+    usage["cpuUsage"] = format(float(cpuUsage), '.2f')
+    usage["memoryUsage"] = format(int(memoryUsage) / 1000000, '.2f')
     return usage
 
 

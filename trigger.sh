@@ -146,10 +146,7 @@ then
             export PYTEST_PATH=${path}
        fi
     fi
-fi
-
-if [ $target == "STM" ] || [ $target == "stm" ]
-then
+else
     echo $ip > $DATA_FILE
 fi
 
@@ -247,7 +244,7 @@ do
 done
 
 # Start test case execution
-timeout 10m python3 -m TUC --exclude Skipped -t $service -p default
+timeout 30m python3 -m TUC --exclude Skipped -t $service -p default
 result=`echo $?`
 if [ $result != 0 ]
 then
