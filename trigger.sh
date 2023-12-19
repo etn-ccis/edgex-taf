@@ -1,6 +1,6 @@
 # This is main script to trigger edgex-taf tests in non-docker mode in pipeline or local environment
 #	usage for KVM: sh trigger.sh --service functionalTest/V2-API/core-metadata --auth admin/admin --port 8002 --target KVM --path <Path_of_edge-linux-test-pytest>
-#	usage for STM: sh trigger.sh --service functionalTest/V2-API/core-metadata --auth admin/admin --port 8002 --target STM --ip <IP_address_of_STM> --path <Path_of_edge-linux-test-pytest>
+#	usage for STM: sh trigger.sh --service functionalTest/V2-API/core-metadata --auth admin/admin --port 8002 --target STM --ip <IP_address_of_STM>
 #
 # This script workflow will be like
 #       1. Parse arguments
