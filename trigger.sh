@@ -192,6 +192,9 @@ then
     # Install TAF common:
     echo "<<<<< Installing TAF common >>>>>"
     git clone https://github.com/edgexfoundry/edgex-taf-common.git
+    cd edgex-taf-common
+    git checkout e0b637c10739bd98613f7dab2e469b3892870a4d
+    cd ..
     sleep 1
     # Install dependency lib
     echo "<<<<< Installing TAF common related libraries >>>>>"
