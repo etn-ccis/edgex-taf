@@ -101,13 +101,17 @@ def general_changes():
     change_auth_type("TAF/testCaseModules/keywords/core-metadata/coreMetadataAPI.robot")
     change_auth_type("TAF/testCaseModules/keywords/core-data/coreDataAPI.robot")
     change_auth_type("TAF/testCaseModules/keywords/support-scheduler/supportSchedulerAPI.robot")
+    change_auth_type("TAF/testCaseModules/keywords/support-notifications/cleanupAPI.robot")
+    change_auth_type("TAF/testCaseModules/keywords/support-notifications/notificationAPI.robot")
+    change_auth_type("TAF/testCaseModules/keywords/support-notifications/subscriptionAPI.robot")
+    change_auth_type("TAF/testCaseModules/keywords/support-notifications/transmissionAPI.robot")
     change_port("8443/core-metadata", "8002/metadata")
     change_port("8443/core-command", "8002/command")
     change_port("8443/core-data", "8002/coredata")
     change_port("8443/support-notifications", "8002/notification")
     change_port("8443/support-scheduler", "8002/scheduler")
     change_auth_type("TAF/testCaseModules/keywords/core-command/coreCommandAPI.robot")
-    
+
     replace("TAF/testCaseModules/keywords/setup/startup_checker.py",
             "\"Authorization\": \"Bearer {}\"",
             "\"X-Auth-Token= {}\"")
@@ -316,7 +320,7 @@ def main():
         # Modify condition for checking the length
         replace("TAF/testScenarios/functionalTest/V2-API/support-scheduler/interval/GET.robot",
                 "== 4",
-                ">= 4") 
+                ">= 4")
         # Modify condition for checking the length
         replace("TAF/testScenarios/functionalTest/V2-API/support-scheduler/interval/GET.robot",
                 "== 3",
@@ -329,9 +333,124 @@ def main():
         add_data("TAF/testScenarios/functionalTest/V2-API/support-scheduler/intervalaction/GET.robot",
                  "IntervalactionGET006 - Query all Intervalactions by limit = -1 and MaxResultCount= 5\n",
                  "    [Tags]    Skipped\n")
+    if service == "support-notifications":
+        # Modified condition for checking current devices
+        replace("TAF/testScenarios/functionalTest/V2-API/support-notifications/subscription/GET-Positive-II.robot",
+                "== 2",
+                ">= 2")
+        # Modified condition for checking current devices
+        replace("TAF/testScenarios/functionalTest/V2-API/support-notifications/subscription/GET-Positive-II.robot",
+                "== 3",
+                ">= 3")
+        # Modified condition for checking current devices
+        replace("TAF/testScenarios/functionalTest/V2-API/support-notifications/subscription/GET-Positive.robot",
+                "== 3",
+                ">= 3")
+        # Modified condition for checking current devices
+        replace("TAF/testScenarios/functionalTest/V2-API/support-notifications/subscription/GET-Positive.robot",
+                "== 2",
+                ">= 2")
+        # Modified condition for checking current devices
+        replace("TAF/testScenarios/functionalTest/V2-API/support-notifications/transmission/GET-Positive.robot",
+                "== 4",
+                ">= 4")
+        # Modified condition for checking current devices
+        replace("TAF/testScenarios/functionalTest/V2-API/support-notifications/transmission/GET-Positive.robot",
+                "== 3",
+                ">= 3")
+        # Skiping this test as this test need to check on v2.3.0
+        add_data("TAF/testScenarios/functionalTest/V2-API/support-notifications/cleanup/DELETE.robot",
+                 "Cleanup001 - Cleanup\n",
+                 "    [Tags]    Skipped\n")
+        # Skiping this test as this test need to check on v2.3.0
+        add_data("TAF/testScenarios/functionalTest/V2-API/support-notifications/cleanup/DELETE.robot",
+                 "Cleanup002 - Cleanup by age\n",
+                 "    [Tags]    Skipped\n")
+        # Skiping this test as this test need to check on v2.3.0
+        add_data("TAF/testScenarios/functionalTest/V2-API/support-notifications/notification/GET-Negative-II.robot",
+                 "ErrNotificationGET015 - Query notifications by start/end time with invalid offset range\n",
+                 "    [Tags]    Skipped\n")
+        # Skiping this test as this test need to check on v2.3.0
+        add_data("TAF/testScenarios/functionalTest/V2-API/support-notifications/notification/GET-Positive-II.robot",
+                 "NotificationGET010 - Query notifications with time range\n",
+                 "    [Tags]    Skipped\n")
+        # Skiping this test as this test need to check on v2.3.0
+        add_data("TAF/testScenarios/functionalTest/V2-API/support-notifications/notification/GET-Positive-II.robot",
+                 "NotificationGET011 - Query notifications with time range by offset\n",
+                 "    [Tags]    Skipped\n")
+        # Skiping this test as this test need to check on v2.3.0
+        add_data("TAF/testScenarios/functionalTest/V2-API/support-notifications/notification/GET-Positive-II.robot",
+                 "NotificationGET012 - Query notifications with time range by limit\n",
+                 "    [Tags]    Skipped\n")
+        # Skiping this test as this test need to check on v2.3.0
+        add_data("TAF/testScenarios/functionalTest/V2-API/support-notifications/notification/POST.robot",
+                 "ErrNotificationPOST001 - Create notification with empty content\n",
+                 "    [Tags]    Skipped\n")
+        # Skiping this test as this test need to check on v2.3.0
+        add_data("TAF/testScenarios/functionalTest/V2-API/support-notifications/notification/POST.robot",
+                 "ErrNotificationPOST002 - Create notification with empty sender\n",
+                 "    [Tags]    Skipped\n")
+        # Skiping this test as this test need to check on v2.3.0
+        add_data("TAF/testScenarios/functionalTest/V2-API/support-notifications/notification/POST.robot",
+                 "ErrNotificationPOST003 - Create notification with invalid sender\n",
+                 "    [Tags]    Skipped\n")
+        # Skiping this test as this test need to check on v2.3.0
+        add_data("TAF/testScenarios/functionalTest/V2-API/support-notifications/notification/POST.robot",
+                 "ErrNotificationPOST004 - Create notification with empty severity\n",
+                 "    [Tags]    Skipped\n")
+        # Skiping this test as this test need to check on v2.3.0
+        add_data("TAF/testScenarios/functionalTest/V2-API/support-notifications/notification/POST.robot",
+                 "ErrNotificationPOST005 - Create notification with invalid severity\n",
+                 "    [Tags]    Skipped\n")
+        # Skiping this test as this test need to check on v2.3.0
+        add_data("TAF/testScenarios/functionalTest/V2-API/support-notifications/notification/POST.robot",
+                 "ErrNotificationPOST006 - Create notification with empty categories and labels\n",
+                 "    [Tags]    Skipped\n")
+        # Skiping this test as this test need to check on v2.3.0
+        add_data("TAF/testScenarios/functionalTest/V2-API/support-notifications/notification/POST.robot",
+                 "ErrNotificationPOST007 - Create notification with invalid status\n",
+                 "    [Tags]    Skipped\n")
+        # Skiping this test as this test need to check on v2.3.0
+        add_data("TAF/testScenarios/functionalTest/V2-API/support-notifications/transmission/GET-Negative-II.robot",
+                 "ErrTransmissionGET015 - Query transmissions by start/end time with invalid offset range\n",
+                 "    [Tags]    Skipped\n")
+        # Skiping this test as this test need to check on v2.3.0
+        add_data("TAF/testScenarios/functionalTest/V2-API/support-notifications/transmission/GET-Negative.robot",
+                 "ErrTransmissionGET001 - Query all transmissions with invalid offset range\n",
+                 "    [Tags]    Skipped\n")
+        # Skiping this test as this test need to check on v2.3.0
+        add_data("TAF/testScenarios/functionalTest/V2-API/support-notifications/transmission/GET-Negative.robot",
+                 "ErrTransmissionGET004 - Query transmissions by status with invalid offset range\n",
+                 "    [Tags]    Skipped\n")
+        # Skiping this test as this test need to check on v2.3.0
+        add_data("TAF/testScenarios/functionalTest/V2-API/support-notifications/transmission/GET-Positive-II.robot",
+                 "TransmissionGET008 - Query transmissions with time range\n",
+                 "    [Tags]    Skipped\n")
+        # Skiping this test as this test need to check on v2.3.0
+        add_data("TAF/testScenarios/functionalTest/V2-API/support-notifications/transmission/GET-Positive-II.robot",
+                 "TransmissionGET009 - Query transmissions with time range by offset\n",
+                 "    [Tags]    Skipped\n")
+        # Skiping this test as this test need to check on v2.3.0
+        add_data("TAF/testScenarios/functionalTest/V2-API/support-notifications/transmission/GET-Positive-II.robot",
+                 "TransmissionGET010 - Query transmissions with time range by limit\n",
+                 "    [Tags]    Skipped\n")
+        # Skiping this test as this test need to check on v2.3.0
+        add_data("TAF/testScenarios/functionalTest/V2-API/support-notifications/transmission/GET-Positive.robot",
+                 "TransmissionGET005 - Query transmissions with specified status\n",
+                 "    [Tags]    Skipped\n")
+        # Skiping this test as this test need to check on v2.3.0
+        add_data("TAF/testScenarios/functionalTest/V2-API/support-notifications/transmission/GET-Positive.robot",
+                 "TransmissionGET006 - Query transmissions with specified status by offset\n",
+                 "    [Tags]    Skipped\n")
+        # Skiping this test as this test need to check on v2.3.0
+        add_data("TAF/testScenarios/functionalTest/V2-API/support-notifications/transmission/GET-Positive.robot",
+                 "TransmissionGET007 - Query transmissions with specified status by limit\n",
+                 "    [Tags]    Skipped\n")
+
+
     if service == "4_ping_response_time" or service=="performance-metrics-collection":
         # Added dependent library in test robot file
-        add_data("TAF/testScenarios/performanceTest/performance-metrics-collection/4_ping_response_time/ping_response_time.robot", 
+        add_data("TAF/testScenarios/performanceTest/performance-metrics-collection/4_ping_response_time/ping_response_time.robot",
                  "Resource        TAF/testCaseModules/keywords/common/commonKeywords.robot\n",
                  "Variables       TAF/config/performance-metrics/configuration.py\n")
         # Remove service ping as service is not available in swagger but was available in docker container
@@ -369,17 +488,17 @@ def main():
         replace("TAF/testCaseModules/keywords/performance-metrics-collection/PingResponse.py", "8443", "8002")
         # Replace Token method from BEARER to X-Auth-Token
         swap("TAF/testCaseModules/keywords/performance-metrics-collection/PingResponse.py",
-             "header = {\"Authorization\": \"Bearer {}\".format(token)}", 
+             "header = {\"Authorization\": \"Bearer {}\".format(token)}",
              "header = {\"X-Auth-Token\": token}")
         # Imported data from configuration.py to profile_constant variable as in docker mode also this variable is setting
         add_data("TAF/testCaseModules/keywords/performance-metrics-collection/PingResponse.py",
-                 "def show_aggregation_table_in_html():\n", 
-                 "    profile_constant = __import__(\"TAF.config.performance-metrics.configuration\", fromlist=['configuration'])\n    SettingsInfo().add_name('profile_constant', profile_constant)\n") 
+                 "def show_aggregation_table_in_html():\n",
+                 "    profile_constant = __import__(\"TAF.config.performance-metrics.configuration\", fromlist=['configuration'])\n    SettingsInfo().add_name('profile_constant', profile_constant)\n")
     if service == "3_resource_usage_with_autoevent" or service=="performance-metrics-collection":
         # Added dependent library in test robot file
-        add_data("TAF/testScenarios/performanceTest/performance-metrics-collection/3_resource_usage_with_autoevent/resource_usage_with_autoevent.robot", 
+        add_data("TAF/testScenarios/performanceTest/performance-metrics-collection/3_resource_usage_with_autoevent/resource_usage_with_autoevent.robot",
                  "Resource        TAF/testCaseModules/keywords/common/commonKeywords.robot\n",
                  "Variables       TAF/config/performance-metrics/configuration.py\n")
-  
+
 if __name__ == "__main__":
     main()
