@@ -7,3 +7,4 @@ robotframework-requests
 RESTinstance
 PyYAML
 psutil
+paramiko
