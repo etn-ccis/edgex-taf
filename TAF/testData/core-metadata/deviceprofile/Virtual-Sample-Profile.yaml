@@ -1,0 +1,36 @@
+name: "Virtual-Sample-Profile"
+description: "aeroplane tachometer profile"
+manufacturer: "Honeywell"
+model: "ABC123"
+labels:
+  - "aeroplane"
+  - "tachometer"
+  - "Honeywell"
+  - "uint16_wr"
+
+deviceResources:
+  - name: "DeviceValue_UINT16_RW"
+    description: "Generate device UINT16 value"
+    isHidden: true
+    tag: "rpm"
+    properties:
+      valueType: "Uint16"
+      readWrite: "RW"
+      minimum: "1500"
+      units: "rpm"
+      defaultValue: "3000"
+
+deviceCommands:
+  - name: "EngineSpeed"
+    isHidden: false
+    readWrite: RW
+    resourceOperations:
+      - deviceResource: "DeviceValue_UINT16_RW"
+  - name: "PropellerSpeed"
+    isHidden: false
+    readWrite: R
+    resourceOperations:
+      - deviceResource: "DeviceValue_UINT16_RW"
+
+
+
