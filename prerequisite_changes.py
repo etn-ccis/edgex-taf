@@ -886,15 +886,18 @@ def main():
                 "Record response   edgex-device-virtual",
                 "# Record response   edgex-device-virtual")
         # Replace Port in python file from 8443 to 8002, later on we can change it to 443
-        replace("TAF/testCaseModules/keywords/performance-metrics-collection/PingResponse.py", "8443", "8002")
+        replace("TAF/testCaseModules/keywords/performance-metrics-collection/PingResponse.py", "8443", "80")
         # Replace Token method from BEARER to X-Auth-Token
-        swap("TAF/testCaseModules/keywords/performance-metrics-collection/PingResponse.py",
+        replace("TAF/testCaseModules/keywords/performance-metrics-collection/PingResponse.py",
              "header = {\"Authorization\": \"Bearer {}\".format(token)}",
              "header = {\"X-Auth-Token\": token}")
+        replace("",
+                "service_url = \"{}://{}:{}\".format(SettingsInfo().constant.URI_SCHEME, SettingsInfo().constant.BASE_URL, port)",
+                "service_url = \"http://{}:{}\".format(SettingsInfo().constant.BASE_URL, port)")
         # Imported data from configuration.py to profile_constant variable as in docker mode also this variable is setting
         add_data("TAF/testCaseModules/keywords/performance-metrics-collection/PingResponse.py",
                  "def show_aggregation_table_in_html():\n",
-                 "profile_constant = __import__(\"TAF.config.performance-metrics.configuration\", fromlist=['configuration'])\n    SettingsInfo().add_name("
+                 "    profile_constant = __import__(\"TAF.config.performance-metrics.configuration\", fromlist=['configuration'])\n    SettingsInfo().add_name("
                  "'profile_constant', profile_constant)\n")
     if service == "3_resource_usage_with_autoevent" or service == "performance-metrics-collection":
         # Added dependent library in test robot file
