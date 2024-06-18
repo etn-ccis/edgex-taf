@@ -349,6 +349,18 @@ def general_changes():
     And Response Time Should Be Less Than "${default_response_time_threshold}"ms
     [Teardown]  Delete Multiple Device Profiles By Names  Test-Profile-1""")
 
+    replace_Paragraph_in_file("TAF/testScenarios/functionalTest/V2-API/core-metadata/deviceprofile/GET-Positive.robot",
+                              """ProfileGET001 - Query all device profiles
+    [Tags]  SmokeTest
+    Given Generate Multiple Device Profiles Sample
+    And Create Device Profile ${deviceProfile}
+    When Query All Device Profiles""",
+                              """ProfileGET001 - Query all device profiles
+    [Tags]  SmokeTest
+    Given Generate Multiple Device Profiles Sample
+    And Create Device Profile ${deviceProfile}
+    When Query All Device Profiles With limit=50""")
+
     add_data("TAF/testScenarios/functionalTest/V2-API/core-metadata/deviceprofile/POST-Negative-Deviceresource.robot",
              "ErrProfileResourcePOST009 - Add deviceResource with invalid units value",
              "    [Tags]  skipped\n    #Skipping this as we do not support consul\n")
@@ -512,6 +524,10 @@ def general_changes():
                                  """TransmissionGET012 - Query transmissions by subscription
     Given Create Subscriptions And Notifications""",
                                  """\n    sleep  10s""")
+
+    add_data("TAF/testScenarios/functionalTest/V2-API/support-scheduler/intervalaction/POST-Positive.robot",
+             "IntervalactionPOST002 - Create pre-created intervalaction with pre-created interval",
+             "    [Tags]  skipped\n    #Skipping this as we do not support consul\n")
 
 
 def main():
