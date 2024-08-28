@@ -20,7 +20,8 @@ case ${option} in
   -useradd)  #create user
     if [ -z "$token" ]
     then
-        token=`curl -s -X POST "https://${BASE_URL}:${port}/login" -H  "accept: application/json" -H  "X-Original-IP: ${BASE_URL}" -H  "Content-Type: application/json" -d "{\"username\":\"${username}\",\"password\":\"${password}\"}" --insecure | jq -r .token`
+        token=`curl -X POST "https://${BASE_URL}/login" -H  "accept: application/json" -H  "X-Original-IP: ${BASE_URL}" -H  "Content-Type: application/json" -d "{\"username\":\"${username}\",\"password\":\"${password}\"}" --insecure | jq -r .token`
+        #token=`curl -s -X POST "https://${BASE_URL}:${port}/login" -H  "accept: application/json" -H  "X-Original-IP: ${BASE_URL}" -H  "Content-Type: application/json" -d "{\"username\":\"${username}\",\"password\":\"${password}\"}" --insecure | jq -r .token`
         echo ${token}
     else
         echo ${token}
