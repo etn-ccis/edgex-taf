@@ -1,0 +1,94 @@
+name: "Virtual-Sample-Profile"
+description: "BACnet Honeywell thermostats"
+manufacturer: "Honeywell"
+model: "ABC123"
+labels:
+  - "bacnet"
+  - "thermostat"
+  - "Honeywell"
+  - "bool_rw"
+  - "uint8_r"
+
+deviceResources:
+  - name: "DeviceValue_Boolean_RW"
+    description: "Generate device boolean value"
+    isHidden: true
+    tag: "status"
+    properties:
+      valueType: "Bool"
+      readWrite: "RW"
+      minimum: 0
+      maximum: 5
+      defaultValue: "true"
+  - name: "DeviceValue_UINT8_R"
+    description: "Generate device UINT8 value"
+    isHidden: true
+    tag: "temperature"
+    properties:
+      valueType: "Uint8"
+      readWrite: "RW"
+      units: "degreesFarenheit"
+  - name: "DeviceValue_INT8_R"
+    description: "Generate device INT8 value"
+    isHidden: true
+    tag: "temperature"
+    properties:
+      valueType: "int8"
+      readWrite: "RW"
+      units: "degreesFarenheit"
+  - name: "Virtual_DeviceValue_INT8_RW"
+    description: "Generate device INT8 value"
+    isHidden: true
+    tag: "temperature"
+    properties:
+      valueType: "int8"
+      readWrite: "RW"
+      units: "degreesFarenheit"
+
+deviceCommands:
+  - name: "CurrentStatus"
+    isHidden: true
+    readWrite: W
+    resourceOperations:
+      - deviceResource: "DeviceValue_Boolean_RW"
+  - name: "CurrentTemperature"
+    isHidden: false
+    readWrite: R
+    resourceOperations:
+      - deviceResource: "DeviceValue_UINT8_R"
+  - name: "CurrentInfo"
+    isHidden: false
+    readWrite: R
+    resourceOperations:
+      - deviceResource: "DeviceValue_Boolean_RW"
+      - deviceResource: "DeviceValue_UINT8_R"
+  - name: "Virtual_GenerateDeviceValue_Binary_R"
+    isHidden: false
+    readWrite: RW
+    resourceOperations:
+      - deviceResource: "DeviceValue_Boolean_RW"
+      - deviceResource: "DeviceValue_UINT8_R"
+  - name: "PropellerSpeed"
+    isHidden: false
+    readWrite: RW
+    resourceOperations:
+      - deviceResource: "DeviceValue_UINT8_R"
+      - deviceResource: "DeviceValue_Boolean_RW"
+  - name: "Virtual_GenerateDeviceValue_Boolean_R"
+    isHidden: false
+    readWrite: RW
+    resourceOperations:
+      - deviceResource: "DeviceValue_UINT8_R"
+      - deviceResource: "DeviceValue_Boolean_RW"
+  - name: "Virtual_GenerateDeviceValue_FLOAT32_R"
+    isHidden: false
+    readWrite: RW
+    resourceOperations:
+      - deviceResource: "DeviceValue_UINT8_R"
+      - deviceResource: "DeviceValue_Boolean_RW"
+  - name: "Virtual_GenerateDeviceValue_INT8_RW"
+    isHidden: false
+    readWrite: RW
+    resourceOperations:
+      - deviceResource: "Virtual_DeviceValue_INT8_RW"
+      - deviceResource: "DeviceValue_Boolean_RW"

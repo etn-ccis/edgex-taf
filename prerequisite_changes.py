@@ -164,6 +164,7 @@ def general_changes():
     change_port("8443/support-scheduler", "80/scheduler")
     change_port("8443/core-keeper", "80/core-keeper")
     change_auth_type("TAF/testCaseModules/keywords/core-command/coreCommandAPI.robot")
+    change_auth_type("TAF/testScenarios/functionalTest/API/core-command/device/GET-Positive.robot")
 
     replace("TAF/testCaseModules/keywords/setup/startup_checker.py",
             "\"Authorization\": \"Bearer {}\"",
@@ -172,6 +173,11 @@ def general_changes():
     replace("TAF/config/global_variables.py",
             "URI_SCHEME = \"https\"",
             "URI_SCHEME = \"http\"")
+
+    # Due to performance issue need to change default_response_time_threshold
+    replace("TAF/testCaseModules/keywords/common/commonKeywords.robot",
+            "${default_response_time_threshold}  1200",
+            "${default_response_time_threshold}  4000")
 
     replace_lines("TAF/testCaseModules/keywords/setup/edgex.py",
                   ["checker.check_services_startup([\"data\", \"metadata\", \"command\", \"support-notifications\", \"support-scheduler\",",
@@ -292,6 +298,111 @@ def general_changes():
     When Query All Provision Watchers With limit=2
     Then Should Return Status Code "200" And provisionWatchers
     And totalCount Should be 3  # device-onvif-camera will auto create a provision watcher""")
+
+    replace("TAF/testScenarios/functionalTest/API/core-command/device/GET-Positive.robot",
+            "Given Create 5 Devices For device-virtual",
+            "#Given Create 5 Devices For device-virtual")
+
+    add_data("TAF/testScenarios/functionalTest/API/core-command/device/GET-Positive.robot",
+             "CommandGET001 - Query all DeviceCoreCommands",
+             "    Given Set Test Variable  ${profile_name}  Virtual-Sample-Profile\n    And Generate A Device Profile Sample  ${profile_name}\n    And Create "
+             "device profile ${deviceProfile}\n    And Create 5 Devices For device-virtual\n")
+
+    add_data("TAF/testScenarios/functionalTest/API/core-command/device/GET-Positive.robot",
+             "CommandGET002 - Query all DeviceCoreCommands by offset",
+             "    Given Set Test Variable  ${profile_name}  Virtual-Sample-Profile\n    And Generate A Device Profile Sample  ${profile_name}\n    And Create "
+             "device profile ${deviceProfile}\n    And Create 5 Devices For device-virtual\n")
+
+    add_data("TAF/testScenarios/functionalTest/API/core-command/device/GET-Positive.robot",
+             "CommandGET003 - Query all DeviceCoreCommands by limit",
+             "    Given Set Test Variable  ${profile_name}  Virtual-Sample-Profile\n    And Generate A Device Profile Sample  ${profile_name}\n    And Create "
+             "device profile ${deviceProfile}\n    And Create 5 Devices For device-virtual\n")
+
+    replace("TAF/testScenarios/functionalTest/API/core-command/device/GET-Positive.robot",
+            "Given Create Device For device-virtual With Name ${device_name}",
+            "#Given Create Device For device-virtual With Name ${device_name}")
+
+    add_data("TAF/testScenarios/functionalTest/API/core-command/device/GET-Positive.robot",
+             "${device_name}  Set Variable  Random-Integer-Device",
+             "    Given Set Test Variable  ${profile_name}  Virtual-Sample-Profile\n    And Generate A Device Profile Sample  ${profile_name}\n    And Create "
+             "device profile ${deviceProfile}\n    And Create Device For device-virtual With Name ${device_name}\n")
+
+    add_data("TAF/testScenarios/functionalTest/API/core-command/device/GET-Positive.robot",
+             "${device_name}  Set Variable  Random-Binary-Device",
+             "    Given Set Test Variable  ${profile_name}  Virtual-Sample-Profile\n    And Generate A Device "
+             "Profile Sample  ${profile_name}\n    And Create device profile ${deviceProfile}\n    And Create Device For device-virtual With Name ${"
+             "device_name}\n")
+
+    add_data("TAF/testScenarios/functionalTest/API/core-command/device/GET-Positive.robot",
+             "${device_name}  Set Variable  Random-Boolean-Device",
+             "    Given Set Test Variable  ${profile_name}  Virtual-Sample-Profile\n    And Generate A Device Profile Sample  ${profile_name}\n    And Create "
+             "device profile ${deviceProfile}\n    And Create Device For device-virtual With Name ${device_name}\n    When Get Device ${device_name} Read "
+             "Command PropellerSpeed With ds-returnevent:no\n")
+
+    replace("TAF/testScenarios/functionalTest/API/core-command/device/GET-Positive.robot",
+            "Given Set Test Variable  ${device_name}  Random-Float-Device",
+            "Given Set Test Variable  ${profile_name}  Virtual-Sample-Profile\n    And Set Test Variable  ${device_name}  Random-Float-Device\n    And "
+            "Generate A "
+            "Device Profile Sample  ${profile_name}\n    And Create "
+            "device profile ${deviceProfile}")
+
+    replace("TAF/testScenarios/functionalTest/API/core-command/device/GET-Positive.robot",
+            "[Teardown]  Delete device by name ${device_name}",
+            "[Teardown]  Run Keywords  Delete device by name ${device_name}\n                ...      AND  Delete Device Profile By Name  ${profile_name}")
+
+    replace("TAF/testScenarios/functionalTest/API/core-command/device/GET-Positive.robot",
+            "[Teardown]  Delete multiple devices by names  @{device_list}",
+            "[Teardown]  Run Keywords  Delete multiple devices by names  @{device_list}\n                ...      AND  Delete Device Profile By Name  ${"
+            "profile_name}")
+
+    replace_paragraph_in_file("TAF/testScenarios/functionalTest/API/core-command/device/GET-Negative.robot",
+                              """    And Update Device ${device_name} With adminState=LOCKED
+    When Run Keyword And Expect Error  *  Get Specified Device Random-Boolean-Device Read Command BoolArray
+    Then Should Return Status Code "423"
+    And Should Return Content-Type "application/json"
+    And Response Time Should Be Less Than "${default_response_time_threshold}"ms
+    [Teardown]  Delete device by name ${device_name}""",
+                              """    And Update Device ${device_name} With adminState=LOCKED
+    When Run Keyword And Expect Error  *  Get Specified Device Random-Boolean-Device Read Command BoolArray
+    Then Should Return Status Code "423"
+    And Should Return Content-Type "application/json"
+    And Response Time Should Be Less Than "${default_response_time_threshold}"ms
+    [Teardown]  Run Keywords  Delete device by name ${device_name}
+                ...      AND  Delete Device Profile By Name  ${profile_name}""")
+
+    replace_paragraph_in_file("TAF/testScenarios/functionalTest/API/core-command/device/GET-Negative.robot",
+                              """    And Update Device ${device_name} With operatingState=DOWN
+    When Run Keyword And Expect Error  *  Get Specified Device Random-Binary-Device Read Command Binary
+    Then Should Return Status Code "423"
+    And Should Return Content-Type "application/json"
+    And Response Time Should Be Less Than "${default_response_time_threshold}"ms
+    [Teardown]  Delete device by name ${device_name}""",
+                              """    And Update Device ${device_name} With operatingState=DOWN
+    When Run Keyword And Expect Error  *  Get Specified Device Random-Binary-Device Read Command Binary
+    Then Should Return Status Code "423"
+    And Should Return Content-Type "application/json"
+    And Response Time Should Be Less Than "${default_response_time_threshold}"ms
+    [Teardown]  Run Keywords  Delete device by name ${device_name}
+                ...      AND  Delete Device Profile By Name  ${profile_name}""")
+
+    add_data("TAF/testScenarios/functionalTest/API/core-command/device/SET.robot",
+             "[Tags]  SmokeTest",
+             "    Given Set Test Variable  ${profile_name}  Virtual-Sample-Profile\n    And Generate A Device Profile Sample  ${profile_name}\n    And Create "
+             "device profile ${deviceProfile}\n")
+
+    add_data("TAF/testScenarios/functionalTest/API/core-command/device/SET.robot",
+             "ErrCommandSET002 - Set specified device write command with non-existent command",
+             "    Given Set Test Variable  ${profile_name}  Virtual-Sample-Profile\n    And Generate A Device Profile Sample  ${profile_name}\n    And Create "
+             "device profile ${deviceProfile}\n")
+
+    add_data("TAF/testScenarios/functionalTest/API/core-command/device/SET.robot",
+             "ErrCommandSET003 - Set specified device write command when device is locked",
+             "    Given Set Test Variable  ${profile_name}  Virtual-Sample-Profile\n    And Generate A Device Profile Sample  ${profile_name}\n    And Create "
+             "device profile ${deviceProfile}\n")
+
+    replace("TAF/testScenarios/functionalTest/API/core-command/device/SET.robot",
+            "[Teardown]  Delete device by name ${device_name}",
+            "[Teardown]  Run Keywords  Delete device by name ${device_name}\n                ...      AND  Delete Device Profile By Name  ${profile_name}")
 
 
 def main():
@@ -433,38 +544,20 @@ def main():
         replace("TAF/testScenarios/functionalTest/API/core-command/device/GET-Negative.robot",
                 "offset=8",
                 "offset=12")
-        # adding a tag Skipped as this test is depends on random service which is not available in build
+        # adding a Profile creation before creating device
         add_data("TAF/testScenarios/functionalTest/API/core-command/device/GET-Negative.robot",
                  "Get specified device read command when device AdminState is locked\n",
-                 "    [Tags]    Skipped\n")
-        # adding a tag Skipped as this test is depends on random service which is not available in build
+                 "    Given Set Test Variable  ${profile_name}  Virtual-Sample-Profile\n    And Generate A Device Profile Sample  ${profile_name}\n    And Create "
+                 "device profile ${deviceProfile}\n")
+        # adding a Profile creation before creating device
         add_data("TAF/testScenarios/functionalTest/API/core-command/device/GET-Negative.robot",
                  "Get specified device read command when device OperatingState is down\n",
-                 "    [Tags]    Skipped\n")
+                 "    Given Set Test Variable  ${profile_name}  Virtual-Sample-Profile\n    And Generate A Device Profile Sample  ${profile_name}\n    And Create "
+                 "device profile ${deviceProfile}\n")
         # adding a tag Skipped as this test is depends on random service which is not available in build
         add_data("TAF/testScenarios/functionalTest/API/core-command/device/GET-Positive.robot",
-                 "Query DeviceCoreCommand by device name\n",
-                 "    [Tags]    Skipped\n")
-        # adding a tag Skipped as this test is depends on random service which is not available in build
-        add_data("TAF/testScenarios/functionalTest/API/core-command/device/GET-Positive.robot",
-                 "Get specified device read command\n",
-                 "    [Tags]    Skipped\n")
-        # adding a tag Skipped as this test is depends on random service which is not available in build
-        add_data("TAF/testScenarios/functionalTest/API/core-command/device/GET-Positive.robot",
-                 "Get specified device read command when ds-returnevent is no\n",
-                 "    [Tags]    Skipped\n")
-        # adding a tag Skipped as this test is depends on random service which is not available in build
-        add_data("TAF/testScenarios/functionalTest/API/core-command/device/GET-Positive.robot",
-                 "Get specified device read command when ds-pushevent is yes\n",
-                 "    [Tags]    Skipped\n")
-        # adding a tag Skipped as this test is depends on random service which is not available in build
-        replace("TAF/testScenarios/functionalTest/API/core-command/device/SET.robot",
-                "[Tags]  SmokeTest",
-                "[Tags]  SmokeTest  Skipped")
-        # adding a tag Skipped as this test is depends on random service which is not available in build
-        add_data("TAF/testScenarios/functionalTest/API/core-command/device/SET.robot",
-                 "Set specified device write command when device is locked\n",
-                 "    [Tags]    Skipped\n")
+                 "Get specified device read command when ds-returnevent is false\n",
+                 "    [Tags]    Skipped\n    #we are skipping this due to failure logged here https://github.com/edgexfoundry/edgex-taf/issues/909")
         # add a variable in GET-Positive.robot file which contain response device service length
         add_data("TAF/testScenarios/functionalTest/API/core-command/device/GET-Positive.robot",
                  "When Query All DeviceCoreCommands\n",

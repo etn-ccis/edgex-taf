@@ -68,3 +68,8 @@ This file contains required modification to be done in EdgeX-TAF before executio
 
 ##### 5. stop-services.sh
          This script is used to stop any micro service.
+
+
+## Additional information:
+Have added Virtual-Sample-Profile.yaml in location: TAF/testData/core-metadata/deviceprofile/Virtual-Sample-Profile.yaml
+which is needed for core-command testing.
