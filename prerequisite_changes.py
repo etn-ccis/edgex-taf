@@ -167,7 +167,6 @@ def general_changes():
     change_auth_type("TAF/testScenarios/functionalTest/API/core-command/device/GET-Positive.robot")
     change_auth_type("TAF/testCaseModules/keywords/core-keeper/coreKeeperAPI.robot")
     change_auth_type("TAF/testScenarios/functionalTest/API/core-keeper/kvs/PUT.robot")
-    change_auth_type("")
 
     replace("TAF/testCaseModules/keywords/setup/startup_checker.py",
             "\"Authorization\": \"Bearer {}\"",
