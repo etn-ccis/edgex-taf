@@ -162,9 +162,12 @@ def general_changes():
     change_port("8443/core-data", "80/coredata")
     change_port("8443/support-notifications", "80/notification")
     change_port("8443/support-scheduler", "80/scheduler")
-    change_port("8443/core-keeper", "80/core-keeper")
+    change_port("8443/core-keeper", "80/keeper")
     change_auth_type("TAF/testCaseModules/keywords/core-command/coreCommandAPI.robot")
     change_auth_type("TAF/testScenarios/functionalTest/API/core-command/device/GET-Positive.robot")
+    change_auth_type("TAF/testCaseModules/keywords/core-keeper/coreKeeperAPI.robot")
+    change_auth_type("TAF/testScenarios/functionalTest/API/core-keeper/kvs/PUT.robot")
+    change_auth_type("")
 
     replace("TAF/testCaseModules/keywords/setup/startup_checker.py",
             "\"Authorization\": \"Bearer {}\"",
@@ -195,7 +198,7 @@ def general_changes():
 
     add_data("TAF/testCaseModules/keywords/common/commonKeywords.robot",
              "Set suite variable  ${response}  ${resp.status_code}",
-             "    Set suite variable  ${body}  ${resp.json()}\n")
+             "    TRY\n        Set suite variable  ${body}  ${resp.json()}\n    EXCEPT\n        Log To Console  Response body is None\n    END\n")
 
     add_data("TAF/testScenarios/functionalTest/API/core-metadata/deviceprofile/DELETE-DeviceCommand.robot",
              "ErrProfileCommandDELETE004 - Delete deviceCommand when StrictDeviceProfileChanges config is enabled",
