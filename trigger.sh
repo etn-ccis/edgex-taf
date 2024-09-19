@@ -81,13 +81,14 @@ then
                   support-notifications
                   support-schedular
                   system-agent
+                  core-keeper
                  )
 fi
 
 if [ $parent_service == "performanceTest" ]
 then
     service_list=(
-                  performance-metrics-collection 
+                  performance-metrics-collection
                   0_retrieve_system_info
                   1_retrieve_footprint
                   2_service_startup_time
